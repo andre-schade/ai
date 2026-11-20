@@ -238,6 +238,7 @@ final class OllamaClientTest extends TestCase
             $this->assertSame(0.2, $json['options']['temperature']);
             $this->assertSame(64, $json['options']['num_predict']);
             $this->assertSame(1024, $json['options']['num_ctx']);
+            $this->assertArrayNotHasKey('options', $json['options']);
 
             return new JsonMockResponse([
                 'model' => 'llama3.2',
