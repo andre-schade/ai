@@ -324,6 +324,29 @@ final class ToolboxTest extends TestCase
         $toolbox->getTools();
     }
 
+    public function testTheSameInstanceListedTwiceIsRegisteredOnce()
+    {
+        $tool = new ToolNoParams();
+        $factory = (new MemoryToolFactory())
+            ->addTool(ToolNoParams::class, 'lookup', 'Lookup');
+
+        $toolbox = new Toolbox([$tool, $tool], $factory);
+
+        $this->assertCount(1, $toolbox->getTools());
+    }
+
+    public function testTwoInstancesOfTheSameClassThrow()
+    {
+        $factory = (new MemoryToolFactory())
+            ->addTool(ToolNoParams::class, 'lookup', 'Lookup');
+
+        $toolbox = new Toolbox([new ToolNoParams(), new ToolNoParams()], $factory);
+
+        $this->expectException(ToolConfigurationException::class);
+
+        $toolbox->getTools();
+    }
+
     public function testToolboxMapWithOverrideViaChain()
     {
         $factory1 = (new MemoryToolFactory())

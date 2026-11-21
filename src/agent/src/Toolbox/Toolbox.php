@@ -62,7 +62,14 @@ final class Toolbox extends AbstractToolbox
         }
 
         $toolsMetadata = [];
+        $registered = [];
         foreach ($this->tools as $tool) {
+            // The same instance listed twice (e.g. a service referenced twice in the bundle config) is not ambiguous.
+            if (isset($registered[spl_object_id($tool)])) {
+                continue;
+            }
+            $registered[spl_object_id($tool)] = true;
+
             foreach ($this->toolFactory->getTool($tool) as $metadata) {
                 $name = $metadata->getName();
                 if (isset($toolsMetadata[$name])) {
